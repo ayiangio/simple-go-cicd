@@ -23,11 +23,11 @@ jobs:
 
       - name: Run linter
         run: |
-          go get -u golang.org/x/lint/golint
+          go install golang.org/x/lint/golint@latest
           golint ./...
 
       - name: Run tests
         run: go test -v ./...
 
       - name: Build application
-        run: go build -o myapp .
+        run: go build -o simple-api .
