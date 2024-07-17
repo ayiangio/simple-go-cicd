@@ -16,7 +16,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.20'  
+          go-version: '1.20.0'  
 
       - name: Install dependencies
         run: go mod download
@@ -31,3 +31,21 @@ jobs:
 
       - name: Build application
         run: go build -o simple-api .
+
+      - name: Deployment
+        uses: garygrossgarten/github-action-scp@release
+        with:
+            local: simple-api
+            remote: ${{ secrets.DIRECTORY }}
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USER }}
+            password: ${{ secrets.PASS }}
+            
+      - name: Restart Service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASS }}
+          port: 22
+          script: cd ${{ secrets.DIRECTORY }} && ./restart.sh
